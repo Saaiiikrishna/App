@@ -2,4 +2,32 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
   application:
-    name: user-service
+    name: auth-service # Corrected name
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak: # This 'keycloak' is the registrationId
+            client-id: auth-service # Should match the Client ID in Keycloak
+            client-secret: YOUR_AUTH_SERVICE_CLIENT_SECRET # <<< USER NEEDS TO REPLACE THIS
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}" # Default pattern
+            scope: openid, profile, email, roles
+        provider:
+          keycloak: # Matches the registrationId above
+            issuer-uri: http://localhost:9082/realms/my-app-realm # Adjust port/realm if different
+            user-name-attribute: preferred_username # Standard OIDC claim
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9082/realms/my-app-realm # Adjust port/realm if different
+          # JWK Set URI will be discovered from the issuer-uri based on OIDC .well-known configuration
+
+server:
+  port: 8081 # Or the designated port for auth-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true

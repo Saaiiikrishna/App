@@ -65,18 +65,18 @@ services:
     environment:
       KEYCLOAK_ADMIN: lucy
       KEYCLOAK_ADMIN_PASSWORD: lucy
-#      KC_DB: postgres
-#      KC_DB_SCHEMA: public
-#      KC_DB_USERNAME: ${DB_USER:-lucy}
-#      KC_DB_PASSWORD: ${DB_PASS:-lucy}
-#      KC_DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/keycloak}
+      KC_DB: postgres
+      KC_DB_SCHEMA: public
+      KC_DB_USERNAME: lucy
+      KC_DB_PASSWORD: lucy
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_HOSTNAME: localhost
       KC_FEATURES: token-exchange,admin-fine-grained-authz
     volumes:
       - keycloak:/opt/keycloak/data
     networks:
       - microservices-net
-    links:
+    depends_on:
       - postgres
 
 
